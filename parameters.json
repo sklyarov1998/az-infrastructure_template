@@ -2,13 +2,13 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "virtualNetworks_vnet_medibot_wu_name": {
+        "virtualNetworks_vnet_medibot_name": {
             "value": null
         },
-        "networkSecurityGroups_nsg_medibot_web_externalid": {
+        "networkSecurityGroups_nsg_medibot_db_name": {
             "value": null
         },
-        "networkSecurityGroups_nsg_medibot_db_externalid": {
+        "networkSecurityGroups_nsg_medibot_web_name": {
             "value": null
         }
     }
