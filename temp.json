@@ -7,11 +7,11 @@
             "type": "String"
         },
         "networkSecurityGroups_nsg_medibot_web_externalid": {
-            "defaultValue": "/subscriptions/aed6a109-061a-490a-89f0-1c3ef8fee69b/resourceGroups/rg-medibot-wu/providers/Microsoft.Network/networkSecurityGroups/nsg-medibot-web",
+            "defaultValue": "/subscriptions/aed6a109-061a-490a-89f0-1c3ef8fee69b/resourceGroups/rg-medibot-wu/providers/Microsoft.Network/networkSecurityGroups/NSG-MEDIBOT-WEB",
             "type": "String"
         },
         "networkSecurityGroups_nsg_medibot_db_externalid": {
-            "defaultValue": "/subscriptions/aed6a109-061a-490a-89f0-1c3ef8fee69b/resourceGroups/rg-medibot-wu/providers/Microsoft.Network/networkSecurityGroups/nsg-medibot-db",
+            "defaultValue": "/subscriptions/aed6a109-061a-490a-89f0-1c3ef8fee69b/resourceGroups/rg-medibot-wu/providers/Microsoft.Network/networkSecurityGroups/NSG-MEDIBOT-DB",
             "type": "String"
         }
     },
@@ -98,3 +98,4 @@
         }
     ]
 }
+
