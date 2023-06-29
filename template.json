@@ -1,0 +1,765 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "sshPublicKeys_db_key_name": {
+            "defaultValue": "db_key",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_medibot_dev_name": {
+            "defaultValue": "vnet-medibot-dev",
+            "type": "String"
+        },
+        "virtualNetworks_vnet_medibot_prod_name": {
+            "defaultValue": "vnet-medibot-prod",
+            "type": "String"
+        },
+        "sshPublicKeys_vm_medibot_stage_web_key_name": {
+            "defaultValue": "vm-medibot-stage-web_key",
+            "type": "String"
+        },
+        "networkInterfaces_vm_medibot_stage_db994_name": {
+            "defaultValue": "vm-medibot-stage-db994",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_medibot_dev_db_name": {
+            "defaultValue": "nsg-medibot-dev-db",
+            "type": "String"
+        },
+        "publicIPAddresses_vm_medibot_stage_db_ip_name": {
+            "defaultValue": "vm-medibot-stage-db-ip",
+            "type": "String"
+        },
+        "networkInterfaces_vm_medibot_stage_web140_name": {
+            "defaultValue": "vm-medibot-stage-web140",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_medibot_dev_web_name": {
+            "defaultValue": "nsg-medibot-dev-web",
+            "type": "String"
+        },
+        "publicIPAddresses_vm_medibot_stage_web_ip_name": {
+            "defaultValue": "vm-medibot-stage-web-ip",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_medibot_stage_db_name": {
+            "defaultValue": "nsg-medibot-stage-db",
+            "type": "String"
+        },
+        "networkSecurityGroups_nsg_medibot_stage_web_name": {
+            "defaultValue": "nsg-medibot-stage-web",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/sshPublicKeys",
+            "apiVersion": "2023-03-01",
+            "name": "[parameters('sshPublicKeys_db_key_name')]",
+            "location": "westeurope",
+            "tags": {
+                "vm-db": "db"
+            },
+            "properties": {
+                "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC05rFjcv/41XmuXYoEMnGlqEhu63nveG6ymCIguIT9UnWq0HrTUdH3jmkpiJX0lrl84IuwTPCesxBwCM8kRB2K+ZA9H61+wyh0fuJWdoOzMMUjs6mh4lkgUHKDf7H5+UuPm6YxGpBCSmO6XUMD/OupV3QoCnKmoRXsNc8QNB2ZG8FzVqK1fvi5uffpn0b8SYaetZHAL/oIuaPESxRnEF8koXxt4YK+aue5kmVNpdy5bHLxe+kgGP+OhxYEfWRul+bJDW2cyo6eUwpnJV2c1+UApUqO3SbuOiSeD5lWne0r3GYz/qxjoSfs1fE3mvT/oj35pp4ksfYp7aPS0Ow62Ae1K2/5GcIQ9c0qYMAQa95gvUCI8aeGU5L0jvV/IONGhmzdQZnQkMbiJ8I7417y7baNl5roVjx+3TAtyJRUcKzkB1aVbXwsNJF07qsTczzFE0HW5rxxSetEOd3srOLVKoGLB/6SDrj4UGVl59cQBA/OxIzdTOt3PT+MQzVwWxTWy5E= generated-by-azure"
+            }
+        },
+        {
+            "type": "Microsoft.Compute/sshPublicKeys",
+            "apiVersion": "2023-03-01",
+            "name": "[parameters('sshPublicKeys_vm_medibot_stage_web_key_name')]",
+            "location": "westeurope",
+            "tags": {
+                "vm-web": "web"
+            },
+            "properties": {
+                "publicKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDW2JSp7HUKguoklIUve7+fO5NFSGASj0up1sOVPx2mkwUdvcylwVbgXY6goKqyuyXpbyb60jzWcTbcQsoMhsQ/p1WgjXhVzWbRVclc5Jq+7pgRumI30RLiw2nzd8ThJFd2px6nITb94cse0e4KktcnGZJOd4J0kiGgHlL4cmWHUph2rHaVii+bMkjd7AeW6j1VbMCXBLiRyNDDYNlxwI+QDJA0aOB+yWnprqGZnuhpl/CEWysLaShAO3eKCftQreTw5CgD1ck8lgwVhMa/lnbHiYGNerBr+9rBQ7IT8zKk9dRJ2/2KX81Tu/x7PK2JBd7weVlFkb07J7RX25cLg4n7tM9JlG/O1sbEJ1zdCmv9FNjQVXmJfDq/TlLSR9zkzqaZ/reqFUx54wIywJ42eWTtYtBnidIdYpNfEF+mQUblLn/Ixl+vbLTRD3DqfJaBMIvfx+B0yUHKCn5J3lDABNgyDXKFBwS3ZUQeHtQ1gE44YWayQyN5Ta07ehMNtG9+nfk= generated-by-azure"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_medibot_dev_db_name')]",
+            "location": "westeurope",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowCidrBlockPostgreSQLInbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'), 'AllowCidrBlockPostgreSQLInbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "5432",
+                            "sourceAddressPrefix": "10.0.2.0/24",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowMyIpAddressSSHInbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'), 'AllowMyIpAddressSSHInbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "147.235.72.130",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_medibot_dev_web_name')]",
+            "location": "westeurope",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowAnyCustom8080and80and5000Inbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_dev_web_name'), 'AllowAnyCustom8080and80and5000Inbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "8080",
+                                "80",
+                                "5000"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_medibot_stage_db_name')]",
+            "location": "westeurope",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowCidrBlockPostgreSQLInbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'), 'AllowCidrBlockPostgreSQLInbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "5432",
+                            "sourceAddressPrefix": "10.0.2.0/24",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowMyIpAddressSSHInbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'), 'AllowMyIpAddressSSHInbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "147.235.72.130",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('networkSecurityGroups_nsg_medibot_stage_web_name')]",
+            "location": "westeurope",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "AllowAnyCustom8080and80and5000Inbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'), 'AllowAnyCustom8080and80and5000Inbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "*",
+                            "sourcePortRange": "*",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 100,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [
+                                "8080",
+                                "80",
+                                "5000"
+                            ],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    },
+                    {
+                        "name": "AllowMyIpAddressSSHInbound",
+                        "id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'), 'AllowMyIpAddressSSHInbound')]",
+                        "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+                        "properties": {
+                            "protocol": "TCP",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "22",
+                            "sourceAddressPrefix": "147.235.72.130",
+                            "destinationAddressPrefix": "*",
+                            "access": "Allow",
+                            "priority": 110,
+                            "direction": "Inbound",
+                            "sourcePortRanges": [],
+                            "destinationPortRanges": [],
+                            "sourceAddressPrefixes": [],
+                            "destinationAddressPrefixes": []
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('publicIPAddresses_vm_medibot_stage_db_ip_name')]",
+            "location": "westeurope",
+            "tags": {
+                "vm-web": "web"
+            },
+            "sku": {
+                "name": "Standard",
+                "tier": "Regional"
+            },
+            "properties": {
+                "ipAddress": "52.236.133.75",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": [],
+                "ddosSettings": {
+                    "protectionMode": "VirtualNetworkInherited"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('publicIPAddresses_vm_medibot_stage_web_ip_name')]",
+            "location": "westeurope",
+            "tags": {
+                "vm-web": "web"
+            },
+            "sku": {
+                "name": "Basic",
+                "tier": "Regional"
+            },
+            "properties": {
+                "ipAddress": "52.137.40.121",
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_dev_web_name'), '/AllowAnyCustom8080and80and5000Inbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_web_name'))]"
+            ],
+            "properties": {
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "8080",
+                    "80",
+                    "5000"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_stage_web_name'), '/AllowAnyCustom8080and80and5000Inbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'))]"
+            ],
+            "properties": {
+                "protocol": "*",
+                "sourcePortRange": "*",
+                "sourceAddressPrefix": "*",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [
+                    "8080",
+                    "80",
+                    "5000"
+                ],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_dev_db_name'), '/AllowCidrBlockPostgreSQLInbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "5432",
+                "sourceAddressPrefix": "10.0.2.0/24",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_stage_db_name'), '/AllowCidrBlockPostgreSQLInbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "5432",
+                "sourceAddressPrefix": "10.0.2.0/24",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 100,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_dev_db_name'), '/AllowMyIpAddressSSHInbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "147.235.72.130",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_stage_db_name'), '/AllowMyIpAddressSSHInbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "147.235.72.130",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups/securityRules",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('networkSecurityGroups_nsg_medibot_stage_web_name'), '/AllowMyIpAddressSSHInbound')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'))]"
+            ],
+            "properties": {
+                "protocol": "TCP",
+                "sourcePortRange": "*",
+                "destinationPortRange": "22",
+                "sourceAddressPrefix": "147.235.72.130",
+                "destinationAddressPrefix": "*",
+                "access": "Allow",
+                "priority": 110,
+                "direction": "Inbound",
+                "sourcePortRanges": [],
+                "destinationPortRanges": [],
+                "sourceAddressPrefixes": [],
+                "destinationAddressPrefixes": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('networkInterfaces_vm_medibot_stage_db994_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_medibot_stage_db_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_prod_name'), 'db')]"
+            ],
+            "tags": {
+                "vm-web": "web"
+            },
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_medibot_stage_db994_name')), '/ipConfigurations/ipconfig1')]",
+                        "etag": "W/\"dce26849-35cc-47a8-97ef-dde6ca2ce279\"",
+                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.1.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "name": "vm-medibot-stage-db-ip",
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_medibot_stage_db_ip_name'))]",
+                                "properties": {
+                                    "provisioningState": "Succeeded",
+                                    "resourceGuid": "0a42da53-e21d-4431-9677-cb81775dfe02",
+                                    "publicIPAddressVersion": "IPv4",
+                                    "publicIPAllocationMethod": "Dynamic",
+                                    "idleTimeoutInMinutes": 4,
+                                    "ipTags": [],
+                                    "ipConfiguration": {
+                                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_medibot_stage_db994_name')), '/ipConfigurations/ipconfig1')]"
+                                    },
+                                    "deleteOption": "Delete"
+                                },
+                                "type": "Microsoft.Network/publicIPAddresses",
+                                "sku": {
+                                    "name": "Basic",
+                                    "tier": "Regional"
+                                }
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_prod_name'), 'db')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "nicType": "Standard"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('networkInterfaces_vm_medibot_stage_web140_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_medibot_stage_web_ip_name'))]",
+                "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_prod_name'), 'web')]"
+            ],
+            "tags": {
+                "vm-web": "web"
+            },
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_medibot_stage_web140_name')), '/ipConfigurations/ipconfig1')]",
+                        "etag": "W/\"a4a0b246-ee99-42f7-8429-4c983e7760d7\"",
+                        "type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+                        "properties": {
+                            "provisioningState": "Succeeded",
+                            "privateIPAddress": "10.0.2.4",
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "name": "vm-medibot-stage-web-ip",
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_vm_medibot_stage_web_ip_name'))]",
+                                "properties": {
+                                    "provisioningState": "Succeeded",
+                                    "resourceGuid": "1c6965b0-eb91-403f-ba78-a3d31a2221f9",
+                                    "publicIPAddressVersion": "IPv4",
+                                    "publicIPAllocationMethod": "Dynamic",
+                                    "idleTimeoutInMinutes": 4,
+                                    "ipTags": [],
+                                    "ipConfiguration": {
+                                        "id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vm_medibot_stage_web140_name')), '/ipConfigurations/ipconfig1')]"
+                                    },
+                                    "deleteOption": "Delete"
+                                },
+                                "type": "Microsoft.Network/publicIPAddresses",
+                                "sku": {
+                                    "name": "Basic",
+                                    "tier": "Regional"
+                                }
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_prod_name'), 'web')]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "nicType": "Standard"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('virtualNetworks_vnet_medibot_dev_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_web_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "web",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_dev_name'), 'web')]",
+                        "properties": {
+                            "addressPrefix": "10.0.2.0/24",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_web_name'))]"
+                            },
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "name": "db",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_dev_name'), 'db')]",
+                        "properties": {
+                            "addressPrefix": "10.0.1.0/28",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'))]"
+                            },
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2022-11-01",
+            "name": "[parameters('virtualNetworks_vnet_medibot_prod_name')]",
+            "location": "westeurope",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "10.0.0.0/16"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "web",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_prod_name'), 'web')]",
+                        "properties": {
+                            "addressPrefix": "10.0.2.0/24",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'))]"
+                            },
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    },
+                    {
+                        "name": "db",
+                        "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworks_vnet_medibot_prod_name'), 'db')]",
+                        "properties": {
+                            "addressPrefix": "10.0.1.0/28",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'))]"
+                            },
+                            "serviceEndpoints": [],
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        },
+                        "type": "Microsoft.Network/virtualNetworks/subnets"
+                    }
+                ],
+                "virtualNetworkPeerings": [],
+                "enableDdosProtection": false
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_medibot_dev_name'), '/db')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_medibot_dev_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.1.0/28",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_db_name'))]"
+                },
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_medibot_prod_name'), '/db')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_medibot_prod_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.1.0/28",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_db_name'))]"
+                },
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_medibot_dev_name'), '/web')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_medibot_dev_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_web_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.2.0/24",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_dev_web_name'))]"
+                },
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2022-11-01",
+            "name": "[concat(parameters('virtualNetworks_vnet_medibot_prod_name'), '/web')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', parameters('virtualNetworks_vnet_medibot_prod_name'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'))]"
+            ],
+            "properties": {
+                "addressPrefix": "10.0.2.0/24",
+                "networkSecurityGroup": {
+                    "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_nsg_medibot_stage_web_name'))]"
+                },
+                "serviceEndpoints": [],
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled"
+            }
+        }
+    ]
+}
