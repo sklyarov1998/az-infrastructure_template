@@ -1,1 +1,0 @@
-# az-infrastructure_template
